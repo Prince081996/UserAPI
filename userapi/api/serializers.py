@@ -3,18 +3,26 @@ from userapi.models import User
 
 
 class UserSignUpSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(required=False)
+
+    password = serializers.CharField(required=False)    
     class Meta:
 
         model = User
-        fields = ('first_name','last_name','username','email','role','password')
+        fields = ('first_name','last_name','email','role','password')
     
     def create(self,validated_data): 
         password = validated_data.get('password',None)
         data = validated_data
+        data['username'] = data['email']
         instance = User(**data)
         if password:   
           instance.set_password(password)
         instance.save()
         return instance
 
+
+class UserSerializer(serializers.ModelSerializer):
+
+  class Meta:
+    model =User
+    fields = ('first_name','last_name','email',)
